@@ -20,7 +20,14 @@ app.use(cors({
   ],
   credentials: true
 }));
-app.options('*', cors());
+const cors = require("cors");
+
+app.use(cors({
+  origin: true,
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type"],
+  credentials: true
+}));
 
 // ✅ JSON middleware
 app.use(express.json());
