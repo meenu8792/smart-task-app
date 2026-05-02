@@ -14,7 +14,9 @@ app.use(express.json());
 app.get("/", (req, res) => {
   res.send("Backend is running 🚀");
 });
-
+app.use(cors({
+  origin: "https://smart-task-app-lac.vercel.app"
+}));
 // DB
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected ✅"))
