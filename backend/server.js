@@ -14,14 +14,13 @@ const PORT = process.env.PORT || 5000;
 // ✅ FINAL CORS FIX (VERY IMPORTANT)
 app.use(cors({
   origin: [
-    "https://smart-task-app-lac.vercel.app",
+    "https://smart-task-app-git-main-meenu8792s-projects.vercel.app",
+    "https://smart-task-hkwg24878-meenu8792s-projects.vercel.app",
     "http://localhost:3000"
   ],
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type"],
   credentials: true
 }));
-
+app.options('*', cors());
 
 // ✅ JSON middleware
 app.use(express.json());
@@ -68,6 +67,7 @@ app.post("/register", async (req, res) => {
 // 🔐 LOGIN
 // =========================
 app.post("/login", async (req, res) => {
+  console.log("LOGIN REQUEST RECEIVED 🔥");
   try {
     console.log("LOGIN HIT:", req.body);
 
