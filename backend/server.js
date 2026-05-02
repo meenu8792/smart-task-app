@@ -11,38 +11,29 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 
-// ✅ FINAL CORS FIX (VERY IMPORTANT)
+// ✅ SINGLE CLEAN CORS (NO DUPLICATE)
 app.use(cors({
-  origin: [
-    "https://smart-task-app-git-main-meenu8792s-projects.vercel.app",
-    "https://smart-task-hkwg24878-meenu8792s-projects.vercel.app",
-    "http://localhost:3000"
-  ],
-  credentials: true
-}));
-const cors = require("cors");
-
-app.use(cors({
-  origin: true,
+  origin: true, // allow all (safe for now)
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type"],
   credentials: true
 }));
 
+
 // ✅ JSON middleware
 app.use(express.json());
 
 
-// ✅ ROOT CHECK
+// ✅ ROOT ROUTE
 app.get("/", (req, res) => {
   res.send("Backend is running 🚀");
 });
 
 
-// ✅ DB CONNECTION
+// ✅ DATABASE CONNECTION
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected ✅"))
-  .catch(err => console.log(err));
+  .catch(err => console.log("DB Error:", err));
 
 
 // =========================
@@ -74,17 +65,22 @@ app.post("/register", async (req, res) => {
 // 🔐 LOGIN
 // =========================
 app.post("/login", async (req, res) => {
-  console.log("LOGIN REQUEST RECEIVED 🔥"); // 👈 paste here
+  try {
+    console.log("LOGIN REQUEST RECEIVED 🔥", req.body);
 
-  const { email, password } = req.body;
+    const { email, password } = req.body;
 
-  const user = await User.findOne({ email });
-  if (!user) return res.status(400).send("User not found ❌");
+    const user = await User.findOne({ email });
+    if (!user) return res.status(400).send("User not found ❌");
 
-  const match = await bcrypt.compare(password, user.password);
-  if (!match) return res.status(400).send("Wrong password ❌");
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) return res.status(400).send("Wrong password ❌");
 
-  res.send("Login Successful ✅");
+    res.send("Login Successful ✅");
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Login error");
+  }
 });
 
 
