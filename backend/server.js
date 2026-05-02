@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const bcrypt = require("bcryptjs");
 
-const User = require("./models/User");
+const User = require("./models/user");
 const Task = require("./models/Task");
 const PORT = process.env.PORT || 5000;
 
