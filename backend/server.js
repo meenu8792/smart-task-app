@@ -9,7 +9,10 @@ const Task = require("./models/Task");
 const PORT = process.env.PORT || 5000;
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: "https://smart-task-app-lac.vercel.app", 
+  credentials: true
+}));
 app.use(express.json());
 app.get("/", (req, res) => {
   res.send("Backend is running 🚀");
