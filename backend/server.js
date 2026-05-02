@@ -6,6 +6,7 @@ const bcrypt = require("bcryptjs");
 
 const User = require("./models/User");
 const Task = require("./models/Task");
+const PORT = process.env.PORT || 5000;
 
 const app = express();
 app.use(cors());
@@ -81,4 +82,8 @@ app.delete("/tasks", async (req, res) => {
   res.json({ message: "All tasks deleted" });
 });
 
-app.listen(5000, () => console.log("Server running 🚀"));
+
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
