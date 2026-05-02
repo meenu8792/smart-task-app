@@ -29,7 +29,7 @@ function Dashboard() {
   
 
   const fetchTasks = async () => {
-    const res = await fetch("http://localhost:5000/tasks");
+    const res = await fetch("https://smart-task-app-brlu.onrender.com/tasks");
     const data = await res.json();
     setTasks(data);
   };
@@ -41,7 +41,7 @@ function Dashboard() {
   const addTask = async () => {
     if (!title) return;
 
-    await fetch("http://localhost:5000/tasks", {
+    await fetch("https://smart-task-app-brlu.onrender.com/tasks", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -54,7 +54,7 @@ function Dashboard() {
   };
 
   const toggleTask = async (task) => {
-    await fetch(`http://localhost:5000/tasks/${task._id}`, {
+    await fetch(`https://smart-task-app-brlu.onrender.com/tasks/${task._id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ completed: !task.completed })
@@ -66,7 +66,7 @@ function Dashboard() {
     const updated = prompt("Edit task", task.title);
     if (!updated) return;
 
-    await fetch(`http://localhost:5000/tasks/${task._id}`, {
+    await fetch(`https://smart-task-app-brlu.onrender.com/tasks/${task._id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ title: updated })
@@ -76,7 +76,7 @@ function Dashboard() {
   };
 
   const deleteTask = async (id) => {
-    await fetch(`http://localhost:5000/tasks/${id}`, {
+    await fetch(`https://smart-task-app-brlu.onrender.com/tasks/${id}`, {
       method: "DELETE"
     });
     fetchTasks();
@@ -88,7 +88,7 @@ const clearAll = async () => {
   try {
     if (!window.confirm("Clear all tasks?")) return;
 
-    await fetch("http://localhost:5000/tasks", {
+    await fetch("https://smart-task-app-brlu.onrender.com/tasks", {
       method: "DELETE"
     });
 

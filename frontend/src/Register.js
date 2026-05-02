@@ -5,7 +5,7 @@ function Register() {
   const [password, setPassword] = useState("");
 
   const handleRegister = async () => {
-    const res = await fetch("http://localhost:5000/register", {
+    const res = await fetch("https://smart-task-app-brlu.onrender.com/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
