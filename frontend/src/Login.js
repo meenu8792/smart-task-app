@@ -7,29 +7,35 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = async () => {
-    try {
-      const res = await fetch(`${API}/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ email, password })
-      });
+const handleLogin = async () => {
+  try {
+    setLoading(true);   // 🔥 START loading
 
-      const data = await res.text();
+    const res = await fetch(`${API}/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ email, password })
+    });
 
-      if (data.includes("Successful")) {
-        navigate("/dashboard");
-      } else {
-        alert(data);
-      }
-    } catch {
-      alert("Server not reachable ❌");
+    const data = await res.json();  // 🔥 updated
+
+    if (data.message.includes("Successful")) {
+      localStorage.setItem("user", email);
+      navigate("/dashboard");
+    } else {
+      alert(data.message);
     }
-  };
 
+  } catch (err) {
+    alert("Server not reachable ❌");
+  } finally {
+    setLoading(false);   // 🔥 STOP loading
+  }
+};
   return (
     <div className="container">
       <div className="card">
@@ -48,7 +54,9 @@ function Login() {
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        <button onClick={handleLogin}>Login</button>
+       <button onClick={handleLogin} disabled={loading}>
+  {loading ? "Loading..." : "Login"}
+</button>
 
         <p>
           New user? <a href="/register">Register</a>

@@ -29,7 +29,7 @@ function Dashboard() {
   const [title, setTitle] = useState("");
   const [priority, setPriority] = useState("Low");
   const [filter, setFilter] = useState("all");
-
+const user = localStorage.getItem("user");
   // 🔄 Fetch tasks
   const fetchTasks = async () => {
     try {
@@ -143,7 +143,11 @@ function Dashboard() {
       backgroundColor: ["#00c853", "#ff1744"]
     }]
   };
-
+<h2>Welcome {user} 👋</h2>
+const handleLogout = () => {
+  localStorage.removeItem("user");
+  window.location.href = "/";
+};
   return (
     <div style={styles.container}>
       <h1 style={styles.title}>🚀 Smart Task Dashboard</h1>
@@ -210,6 +214,7 @@ function Dashboard() {
             <button onClick={() => editTask(task)}>Edit</button>
 
             <button onClick={() => deleteTask(task._id)}>Delete</button>
+            <button onClick={handleLogout}>Logout</button>
           </div>
         ))}
       </div>

@@ -53,7 +53,7 @@ app.post("/register", async (req, res) => {
     const user = new User({ email, password: hash });
     await user.save();
 
-    res.send("User Registered Successfully ✅");
+   res.json({ message: "User Registered Successfully" });
   } catch (err) {
     console.log(err);
     res.status(500).send("Register error");
@@ -76,7 +76,7 @@ app.post("/login", async (req, res) => {
     const match = await bcrypt.compare(password, user.password);
     if (!match) return res.status(400).send("Wrong password ❌");
 
-    res.send("Login Successful ✅");
+   res.json({ message: "Login Successful" });
   } catch (err) {
     console.log(err);
     res.status(500).send("Login error");
