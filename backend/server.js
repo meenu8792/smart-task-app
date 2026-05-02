@@ -15,7 +15,13 @@ app.get("/", (req, res) => {
   res.send("Backend is running 🚀");
 });
 app.use(cors({
-  origin: "https://smart-task-app-lac.vercel.app"
+  origin: [
+    "https://smart-task-app-lac.vercel.app",
+    "https://smart-task-app-git-main-meenu8792s-projects.vercel.app",
+    "https://smart-task-app-2njizakkb-meenu8792s-projects.vercel.app"
+  ],
+  methods: ["GET", "POST"],
+  credentials: true
 }));
 // DB
 mongoose.connect(process.env.MONGO_URI)
