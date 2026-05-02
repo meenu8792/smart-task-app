@@ -21,91 +21,118 @@ ChartJS.register(
   PointElement
 );
 
+// ✅ Use ENV variable (VERY IMPORTANT)
+const API = process.env.REACT_APP_API_URL || "https://smart-task-app-br1u.onrender.com";
+
 function Dashboard() {
   const [tasks, setTasks] = useState([]);
   const [title, setTitle] = useState("");
   const [priority, setPriority] = useState("Low");
   const [filter, setFilter] = useState("all");
-  
 
+  // 🔄 Fetch tasks
   const fetchTasks = async () => {
-    const res = await fetch("https://smart-task-app-brlu.onrender.com/tasks");
-    const data = await res.json();
-    setTasks(data);
+    try {
+      const res = await fetch(`${API}/tasks`);
+      const data = await res.json();
+      setTasks(data);
+    } catch (err) {
+      alert("Error fetching tasks ❌");
+    }
   };
 
   useEffect(() => {
     fetchTasks();
   }, []);
 
+  // ➕ Add task
   const addTask = async () => {
     if (!title) return;
 
-    await fetch("https://smart-task-app-brlu.onrender.com/tasks", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ title, priority })
-    });
+    try {
+      await fetch(`${API}/tasks`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ title, priority })
+      });
 
-    setTitle("");
-    fetchTasks();
+      setTitle("");
+      fetchTasks();
+    } catch (err) {
+      alert("Add failed ❌");
+    }
   };
 
+  // ✅ Toggle
   const toggleTask = async (task) => {
-    await fetch(`https://smart-task-app-brlu.onrender.com/tasks/${task._id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ completed: !task.completed })
-    });
-    fetchTasks();
+    try {
+      await fetch(`${API}/tasks/${task._id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ completed: !task.completed })
+      });
+      fetchTasks();
+    } catch {
+      alert("Update failed ❌");
+    }
   };
 
+  // ✏ Edit
   const editTask = async (task) => {
     const updated = prompt("Edit task", task.title);
     if (!updated) return;
 
-    await fetch(`https://smart-task-app-brlu.onrender.com/tasks/${task._id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title: updated })
-    });
+    try {
+      await fetch(`${API}/tasks/${task._id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title: updated })
+      });
 
-    fetchTasks();
+      fetchTasks();
+    } catch {
+      alert("Edit failed ❌");
+    }
   };
 
+  // ❌ Delete
   const deleteTask = async (id) => {
-    await fetch(`https://smart-task-app-brlu.onrender.com/tasks/${id}`, {
-      method: "DELETE"
-    });
-    fetchTasks();
+    try {
+      await fetch(`${API}/tasks/${id}`, {
+        method: "DELETE"
+      });
+      fetchTasks();
+    } catch {
+      alert("Delete failed ❌");
+    }
   };
 
-  
-  // ✅ FIXED CLEAR ALL
-const clearAll = async () => {
-  try {
-    if (!window.confirm("Clear all tasks?")) return;
+  // 🧹 Clear all
+  const clearAll = async () => {
+    try {
+      if (!window.confirm("Clear all tasks?")) return;
 
-    await fetch("https://smart-task-app-brlu.onrender.com/tasks", {
-      method: "DELETE"
-    });
+      await fetch(`${API}/tasks`, {
+        method: "DELETE"
+      });
 
-    setTasks([]);   // 🔥 instant UI clear
-    await fetchTasks(); // 🔥 sync again
+      setTasks([]);
+      fetchTasks();
+    } catch {
+      alert("Clear failed ❌");
+    }
+  };
 
-  } catch (err) {
-    alert("Clear failed");
-  }
-};
+  // 🔍 Filter
   const filteredTasks = tasks.filter((task) => {
     if (filter === "active") return !task.completed;
     if (filter === "completed") return task.completed;
     return true;
   });
 
-  // PIE DATA
+  // 📊 Pie Chart
   const completed = tasks.filter(t => t.completed).length;
   const pending = tasks.length - completed;
 
@@ -116,6 +143,7 @@ const clearAll = async () => {
       backgroundColor: ["#00c853", "#ff1744"]
     }]
   };
+
   return (
     <div style={styles.container}>
       <h1 style={styles.title}>🚀 Smart Task Dashboard</h1>
@@ -155,18 +183,19 @@ const clearAll = async () => {
       {/* TASK GRID */}
       <div style={styles.grid}>
         {filteredTasks.map(task => (
-<div
-  key={task._id}
-  style={{
-    ...styles.taskCard,
-    backgroundColor:
-      task.priority === "High"
-        ? "#ffcccc"
-        : task.priority === "Medium"
-        ? "#ffe5b4"
-        : "#cce5ff"
-  }}
->            <h3 style={{
+          <div
+            key={task._id}
+            style={{
+              ...styles.card,
+              backgroundColor:
+                task.priority === "High"
+                  ? "#ffcccc"
+                  : task.priority === "Medium"
+                  ? "#ffe5b4"
+                  : "#cce5ff"
+            }}
+          >
+            <h3 style={{
               textDecoration: task.completed ? "line-through" : "none"
             }}>
               {task.title}
@@ -185,13 +214,11 @@ const clearAll = async () => {
         ))}
       </div>
 
-      {/* 📊 GRAPHS AT BOTTOM */}
+      {/* PIE */}
       <div style={{ width: "300px", margin: "40px auto" }}>
         <Pie data={pieData} />
       </div>
-    
-      </div>
-    
+    </div>
   );
 }
 
@@ -200,11 +227,11 @@ export default Dashboard;
 /* 🎨 UI */
 const styles = {
   container: {
-  minHeight: "100vh",
-  textAlign: "center",
-  padding: "20px",
-  background: "#f4f7fb"  // 🔥 LIGHT clean background
-},
+    minHeight: "100vh",
+    textAlign: "center",
+    padding: "20px",
+    background: "#f4f7fb"
+  },
   title: {
     marginBottom: "20px"
   },
@@ -244,10 +271,9 @@ const styles = {
   },
   card: {
     width: "250px",
-    background:"white", 
+    background: "white",
     color: "black",
     padding: "15px",
-    borderRadius: "10px",
-   
+    borderRadius: "10px"
   }
 };
