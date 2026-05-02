@@ -1,41 +1,47 @@
 import React, { useState } from "react";
 
+const API = process.env.REACT_APP_API_URL || "http://localhost:5000";
+
 function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleRegister = async () => {
-    const res = await fetch("https://smart-task-app-brlu.onrender.com/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ email, password })
-    });
+    try {
+      const res = await fetch(`${API}/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ email, password })
+      });
 
-    const msg = await res.text();
-    alert(msg);
+      const msg = await res.text();
+      alert(msg);
+    } catch {
+      alert("Register failed ❌");
+    }
   };
 
   return (
     <div className="container">
-    <div className="card">
-      <h2>Register</h2>
+      <div className="card">
+        <h2>Register</h2>
 
-      <input
-        placeholder="Email"
-        onChange={(e) => setEmail(e.target.value)}
-      /><br/>
+        <input
+          placeholder="Email"
+          onChange={(e) => setEmail(e.target.value)}
+        />
 
-      <input
-        placeholder="Password"
-        type="password"
-        onChange={(e) => setPassword(e.target.value)}
-      /><br/><br/>
+        <input
+          type="password"
+          placeholder="Password"
+          onChange={(e) => setPassword(e.target.value)}
+        />
 
-      <button onClick={handleRegister}>Register</button>
+        <button onClick={handleRegister}>Register</button>
+      </div>
     </div>
-     </div>
   );
 }
 
