@@ -22,7 +22,7 @@ ChartJS.register(
 );
 
 // ✅ Use ENV variable (VERY IMPORTANT)
-const API = process.env.REACT_APP_API_URL || "https://smart-task-app-br1u.onrender.com";
+const API = "https://smart-task-app-br1u.onrender.com";
 
 function Dashboard() {
   const [tasks, setTasks] = useState([]);

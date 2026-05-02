@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const API = process.env.REACT_APP_API_URL || "http://localhost:5000";
+const API = "https://smart-task-app-br1u.onrender.com";
 
 function Register() {
   const [email, setEmail] = useState("");
