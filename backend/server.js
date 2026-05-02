@@ -67,23 +67,17 @@ app.post("/register", async (req, res) => {
 // 🔐 LOGIN
 // =========================
 app.post("/login", async (req, res) => {
-  console.log("LOGIN REQUEST RECEIVED 🔥");
-  try {
-    console.log("LOGIN HIT:", req.body);
+  console.log("LOGIN REQUEST RECEIVED 🔥"); // 👈 paste here
 
-    const { email, password } = req.body;
+  const { email, password } = req.body;
 
-    const user = await User.findOne({ email });
-    if (!user) return res.status(400).send("User not found ❌");
+  const user = await User.findOne({ email });
+  if (!user) return res.status(400).send("User not found ❌");
 
-    const match = await bcrypt.compare(password, user.password);
-    if (!match) return res.status(400).send("Wrong password ❌");
+  const match = await bcrypt.compare(password, user.password);
+  if (!match) return res.status(400).send("Wrong password ❌");
 
-    res.send("Login Successful ✅");
-  } catch (err) {
-    console.log(err);
-    res.status(500).send("Login error");
-  }
+  res.send("Login Successful ✅");
 });
 
 
