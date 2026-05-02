@@ -6,34 +6,46 @@ const bcrypt = require("bcryptjs");
 
 const User = require("./models/user");
 const Task = require("./models/Task");
-const PORT = process.env.PORT || 5000;
 
 const app = express();
-app.use(cors({
-  origin: "https://smart-task-app-lac.vercel.app", 
-  credentials: true
-}));
-app.use(express.json());
-app.get("/", (req, res) => {
-  res.send("Backend is running 🚀");
-});
+const PORT = process.env.PORT || 5000;
+
+
+// ✅ FINAL CORS FIX (VERY IMPORTANT)
 app.use(cors({
   origin: [
     "https://smart-task-app-lac.vercel.app",
-    "https://smart-task-app-git-main-meenu8792s-projects.vercel.app",
-    "https://smart-task-app-2njizakkb-meenu8792s-projects.vercel.app"
+    "http://localhost:3000"
   ],
-  methods: ["GET", "POST"],
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type"],
   credentials: true
 }));
-// DB
+
+
+// ✅ JSON middleware
+app.use(express.json());
+
+
+// ✅ ROOT CHECK
+app.get("/", (req, res) => {
+  res.send("Backend is running 🚀");
+});
+
+
+// ✅ DB CONNECTION
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected ✅"))
   .catch(err => console.log(err));
 
-// REGISTER
+
+// =========================
+// 🔐 REGISTER
+// =========================
 app.post("/register", async (req, res) => {
   try {
+    console.log("REGISTER HIT:", req.body);
+
     const { email, password } = req.body;
 
     const exist = await User.findOne({ email });
@@ -46,24 +58,38 @@ app.post("/register", async (req, res) => {
 
     res.send("User Registered Successfully ✅");
   } catch (err) {
+    console.log(err);
     res.status(500).send("Register error");
   }
 });
 
-// LOGIN
+
+// =========================
+// 🔐 LOGIN
+// =========================
 app.post("/login", async (req, res) => {
-  const { email, password } = req.body;
+  try {
+    console.log("LOGIN HIT:", req.body);
 
-  const user = await User.findOne({ email });
-  if (!user) return res.status(400).send("User not found ❌");
+    const { email, password } = req.body;
 
-  const match = await bcrypt.compare(password, user.password);
-  if (!match) return res.status(400).send("Wrong password ❌");
+    const user = await User.findOne({ email });
+    if (!user) return res.status(400).send("User not found ❌");
 
-  res.send("Login Successful ✅");
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) return res.status(400).send("Wrong password ❌");
+
+    res.send("Login Successful ✅");
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Login error");
+  }
 });
 
-// TASK ROUTES
+
+// =========================
+// 📌 TASK ROUTES
+// =========================
 app.post("/tasks", async (req, res) => {
   const task = new Task({
     ...req.body,
@@ -81,7 +107,11 @@ app.get("/tasks", async (req, res) => {
 });
 
 app.put("/tasks/:id", async (req, res) => {
-  const updated = await Task.findByIdAndUpdate(req.params.id, req.body, { new: true });
+  const updated = await Task.findByIdAndUpdate(
+    req.params.id,
+    req.body,
+    { new: true }
+  );
   res.json(updated);
 });
 
@@ -90,14 +120,15 @@ app.delete("/tasks/:id", async (req, res) => {
   res.send("Deleted");
 });
 
-// ✅ FIXED CLEAR ALL
 app.delete("/tasks", async (req, res) => {
   await Task.deleteMany({});
   res.json({ message: "All tasks deleted" });
 });
 
 
-
+// =========================
+// 🚀 SERVER START
+// =========================
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
