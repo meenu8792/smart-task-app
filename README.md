@@ -3,8 +3,8 @@
 A full-stack task management application built using React, Node.js, and MongoDB.
 
 Live Demo
-Frontend: https://your-vercel-link  
-Backend API: https://your-render-link  
+Frontend: https://smart-task-app-lac.vercel.app 
+Backend API: https://smart-task-app-br1u.onrender.com 
 
 Features
  User Registration & Login
