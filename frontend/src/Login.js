@@ -6,19 +6,22 @@ function Login() {
   const [password, setPassword] = useState("");
 
 const navigate = useNavigate();
+const API = "https://smart-task-app-br1u.onrender.com";
 
 const handleLogin = async () => {
   try {
-    const res = await fetch("https://smart-task-app-brlu.onrender.com/login", {
+    const res = await fetch(`${API}/login`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json"
+      },
       body: JSON.stringify({ email, password })
     });
 
     const data = await res.text();
 
     if (data.includes("Successful")) {
-      navigate("/dashboard"); // 🚀 redirect
+      navigate("/dashboard");
     } else {
       alert(data);
     }
