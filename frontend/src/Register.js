@@ -1,12 +1,19 @@
 import React, { useState } from "react";
 
-const API = "https://smart-task-app-br1u.onrender.com";
-
 function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const API = "https://smart-task-app-br1u.onrender.com";
+
   const handleRegister = async () => {
+    if (!email || !password) {
+      alert("Please enter email & password");
+      return;
+    }
+
+    console.log("Register clicked 🔥"); // DEBUG
+
     try {
       const res = await fetch(`${API}/register`, {
         method: "POST",
@@ -16,10 +23,13 @@ function Register() {
         body: JSON.stringify({ email, password })
       });
 
-      const msg = await res.text();
-      alert(msg);
-    } catch {
-      alert("Register failed ❌");
+      const data = await res.text();
+      console.log("Response:", data);
+
+      alert(data);
+    } catch (err) {
+      console.error(err);
+      alert("Server not reachable ❌");
     }
   };
 
@@ -30,16 +40,21 @@ function Register() {
 
         <input
           placeholder="Email"
+          value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
 
         <input
-          type="password"
           placeholder="Password"
+          type="password"
+          value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        <button onClick={handleRegister}>Register</button>
+        {/* ✅ IMPORTANT FIX */}
+        <button onClick={handleRegister}>
+          Register
+        </button>
       </div>
     </div>
   );
